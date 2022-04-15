@@ -1,0 +1,49 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+  - master
+  - dev
+ 
+variables:
+  Major: 2
+  Minor: 0
+  Patch: 1
+  packageVersion: '$(Major).$(Minor).$(Patch).$(Build.BuildId)'
+  proj: $(System.TeamProjectId)
+  feed: CarFunctions
+  workingDirectory: '$(System.DefaultWorkingDirectory)/CarFunctions.Infrastructure'
+
+steps:
+
+  - task: UseDotNet@2
+    displayName: 'Use .NET 6 Core sdk'
+    inputs:
+      packageType: 'sdk'
+      version: '6.0.x'
+
+  # The first task is the dotnet command build, pointing to our csproj file
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet build'
+    inputs:
+      command: 'build'
+      projects: |
+        $(workingDirectory)/*.csproj
+      arguments: '--configuration $(buildConfiguration)'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet pack'
+    inputs:
+      command: 'pack'
+      packagesToPack: '**/*.csproj'
+      versioningScheme: 'byEnvVar'
+      versionEnvVar: 'packageVersion'
+      arguments: '--configuration $(buildConfiguration)'
+    
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet push'
+    inputs:
+      command: push
+      feedPublish: '$(proj)/$(feed)'

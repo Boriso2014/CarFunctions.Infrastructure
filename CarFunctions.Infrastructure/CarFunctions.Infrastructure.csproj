@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Authors>Boris Obuhov</Authors>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Description>Infrastructure for Azure CarFunctions</Description>
+    <AssemblyVersion></AssemblyVersion>
+    <Copyright>Copyright @ 2022, Boris Obuhov</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.5.2" />
+  </ItemGroup>
+
+</Project>

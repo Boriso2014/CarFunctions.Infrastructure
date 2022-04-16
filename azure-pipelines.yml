@@ -8,7 +8,7 @@ trigger:
   - dev
  
 variables:
-  Major: 2
+  Major: 1
   Minor: 0
   Patch: 1
   packageVersion: '$(Major).$(Minor).$(Patch).$(Build.BuildId)'
@@ -24,7 +24,6 @@ steps:
       packageType: 'sdk'
       version: '6.0.x'
 
-  # The first task is the dotnet command build, pointing to our csproj file
   - task: DotNetCoreCLI@2
     displayName: 'dotnet build'
     inputs:
@@ -37,7 +36,7 @@ steps:
     displayName: 'dotnet pack'
     inputs:
       command: 'pack'
-      packagesToPack: '**/*.csproj'
+      packagesToPack: '$(workingDirectory)/*.csproj'
       versioningScheme: 'byEnvVar'
       versionEnvVar: 'packageVersion'
       arguments: '--configuration $(buildConfiguration)'

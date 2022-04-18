@@ -15,34 +15,41 @@ variables:
   proj: $(System.TeamProjectId)
   feed: CarFunctions
   workingDirectory: '$(System.DefaultWorkingDirectory)/CarFunctions.Infrastructure'
+  vmImageName: 'windows-2019'
 
-steps:
+jobs:
+  - job: Create package
+    displayName: Create package
+    pool:
+      vmImage: $(vmImageName)
 
-  - task: UseDotNet@2
-    displayName: 'Use .NET 6 Core sdk'
-    inputs:
-      packageType: 'sdk'
-      version: '6.0.x'
+    steps:
 
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet build'
-    inputs:
-      command: 'build'
-      projects: |
-        $(workingDirectory)/*.csproj
-      arguments: '--configuration $(buildConfiguration)'
+    - task: UseDotNet@2
+      displayName: 'Use .NET 6 Core sdk'
+      inputs:
+        packageType: 'sdk'
+        version: '6.0.x'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet pack'
-    inputs:
-      command: 'pack'
-      packagesToPack: '$(workingDirectory)/*.csproj'
-      versioningScheme: 'byEnvVar'
-      versionEnvVar: 'packageVersion'
-      arguments: '--configuration $(buildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet build'
+      inputs:
+        command: 'build'
+        projects: |
+          $(workingDirectory)/*.csproj
+        arguments: '--configuration $(buildConfiguration)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet pack'
+      inputs:
+        command: 'pack'
+        packagesToPack: '$(workingDirectory)/*.csproj'
+        versioningScheme: 'byEnvVar'
+        versionEnvVar: 'packageVersion'
+        arguments: '--configuration $(buildConfiguration)'
     
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet push'
-    inputs:
-      command: push
-      feedPublish: '$(proj)/$(feed)'
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet push'
+      inputs:
+        command: push
+        feedPublish: '$(proj)/$(feed)'
